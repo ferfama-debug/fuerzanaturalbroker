@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fuerza Natural · Broker de Seguros Luján de Cuyo, Mendoza</title>
+<meta content="Broker de seguros premium en Mendoza. Asesoramiento real. +15 aseguradoras." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Instrument+Serif:ital@0;1&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#04050a;--paper:#f2eed8;--acid:#c8ff3e;--acid2:#a8e82a;
+  --green:#0f3d06;--green2:#1a5c0a;--green3:#2d8c14;
+  --muted:rgba(242,238,216,0.38);--muted2:rgba(242,238,216,0.62);
+  --border:rgba(242,238,216,0.07);--border2:rgba(242,238,216,0.14);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--ink);color:var(--paper);font-family:'Space Mono',monospace;overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+@media (pointer:fine){body,a,button,input,select,textarea,video,label,summary{cursor:none!important}}
+
+/* ══════════════════════════════════
+   MAGNETIC CURSOR
+══════════════════════════════════ */
+#cursor-wrap{position:fixed;inset:0;z-index:9999;pointer-events:none}
+#c-trail{
+  position:absolute;width:6px;height:6px;border-radius:50%;
+  background:var(--acid);
+  transform:translate(-50%,-50%);
+  transition:transform 0.05s;
+  box-shadow:0 0 12px var(--acid),0 0 24px rgba(200,255,62,0.4);
+}
+#c-blob{
+  position:absolute;width:48px;height:48px;border-radius:50%;
+  border:1px solid rgba(200,255,62,0.35);
+  transform:translate(-50%,-50%);
+  transition:width 0.35s ease,height 0.35s ease,border-color 0.35s ease,background 0.35s ease;
+  mix-blend-mode:screen;
+}
+body.mag-hover #c-blob{
+  width:80px;height:80px;
+  border-color:var(--acid);
+  background:rgba(200,255,62,0.07);
+}
+#c-text{
+  position:absolute;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--acid);opacity:0;transform:translate(-50%,-50%);
+  transition:opacity 0.3s;white-space:nowrap;font-family:'Space Mono',monospace;
+}
+body.mag-hover #c-text{opacity:1}
+
+/* ══════════════════════════════════
+   THREE.JS CANVAS — HERO BG
+══════════════════════════════════ */
+#three-canvas{
+  position:fixed;inset:0;z-index:0;
+}
+
+/* ══════════════════════════════════
+   NOISE OVERLAY
+══════════════════════════════════ */
+#noise{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  opacity:0.4;mix-blend-mode:overlay;
+}
+
+/* ══════════════════════════════════
+   SCANLINES
+══════════════════════════════════ */
+#scanlines{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px);
+  animation:scanAnim 8s linear infinite;
+}
+@keyframes scanAnim{0%{background-position:0 0}100%{background-position:0 100%}}
+
+/* ══════════════════════════════════
+   NAV
+══════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:80px;padding:0 3.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.5s;
+}
+nav.solid{background:rgba(4,5,10,0.92);backdrop-filter:blur(40px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;min-width:0}
+.nav-logo-mark{position:relative;width:58px;height:58px;flex-shrink:0;border-radius:50%;overflow:hidden;border:1px solid rgba(200,255,62,0.18);background:#f2eed8;padding:4px;box-shadow:0 0 0 1px rgba(4,5,10,0.35) inset}
+.nav-logo-mark img{width:100%;height:100%;object-fit:contain;display:block;transform:none}
+.nav-wordmark{font-family:'Bebas Neue',sans-serif;font-size:clamp(18px,1.8vw,24px);letter-spacing:0.1em;color:var(--paper);white-space:nowrap}
+.nav-links{display:flex;gap:clamp(1rem,1.8vw,2.1rem);list-style:none;flex-wrap:nowrap}
+.nav-links a{
+  font-size:9px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color 0.2s;white-space:nowrap;
+}
+.nav-links a:hover{color:var(--acid)}
+.nav-cta{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:15px;letter-spacing:0.12em;
+  padding:12px 22px;border-radius:3px;
+  background:transparent;color:var(--acid);
+  border:1px solid var(--acid);
+  text-decoration:none;
+  position:relative;overflow:hidden;
+  transition:color 0.3s;
+}
+.nav-cta::before{
+  content:'';position:absolute;inset:0;
+  background:var(--acid);
+  transform:translateY(101%);transition:transform 0.3s cubic-bezier(0.77,0,0.18,1);
+}
+.nav-cta span{position:relative;z-index:1}
+.nav-cta:hover{color:var(--ink)}
+.nav-cta:hover::before{transform:translateY(0)}
+
+
+/* ══════════════════════════════════
+   VIDEO INTRO — CINEMATIC
+══════════════════════════════════ */
+.video-intro{
+  position:relative;z-index:10;
+  min-height:100svh;
+  display:flex;align-items:flex-end;justify-content:center;
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+}
+.video-intro-media{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(0.95) contrast(1.02) brightness(0.72);
+  transform:scale(1.04);
+  animation:cinemaZoom 16s ease-in-out infinite alternate;
+}
+@keyframes cinemaZoom{from{transform:scale(1.04)}to{transform:scale(1.12)}}
+.video-intro-overlay{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(200,255,62,0.14), transparent 28%),
+    linear-gradient(to bottom, rgba(4,5,10,0.32) 0%, rgba(4,5,10,0.48) 38%, rgba(4,5,10,0.82) 78%, rgba(4,5,10,0.98) 100%);
+}
+.video-intro-vignette{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at center, transparent 42%, rgba(4,5,10,0.3) 72%, rgba(4,5,10,0.75) 100%);
+  mix-blend-mode:multiply;
+}
+.video-intro-grid{
+  position:absolute;inset:0;pointer-events:none;opacity:0.16;
+  background-image:
+    linear-gradient(rgba(200,255,62,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,255,62,0.18) 1px, transparent 1px);
+  background-size:96px 96px;
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,1));
+}
+.video-intro-content{
+  position:relative;z-index:2;
+  width:min(1180px,100%);
+  padding:8rem 3.5rem 4rem;
+  display:grid;grid-template-columns:1.2fr 0.8fr;gap:2rem;align-items:end;
+}
+.video-kicker{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:10px;letter-spacing:0.26em;text-transform:uppercase;color:var(--acid);
+  margin-bottom:1.25rem;
+}
+.video-kicker::before,.video-kicker::after{content:'';width:36px;height:1px;background:rgba(200,255,62,0.45)}
+.video-intro-title{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(70px,10vw,160px);
+  line-height:0.88;letter-spacing:0.03em;color:var(--paper);
+  text-shadow:0 8px 30px rgba(0,0,0,0.35);
+}
+.video-intro-title em{display:block;color:var(--acid);font-style:normal}
+.video-intro-copy{max-width:430px;justify-self:end}
+.video-intro-copy p{font-size:14px;line-height:1.8;color:var(--muted2);margin-bottom:1.4rem}
+.video-intro-actions{display:flex;gap:12px;flex-wrap:wrap}
+.video-pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:180px;padding:14px 22px;text-decoration:none;border-radius:3px;
+  border:1px solid var(--border2);background:rgba(4,5,10,0.45);backdrop-filter:blur(12px);
+  font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.14em;color:var(--paper);
+  transition:transform 0.3s,border-color 0.3s,color 0.3s,background 0.3s;
+}
+.video-pill:hover{transform:translateY(-2px);border-color:var(--acid);color:var(--acid);background:rgba(4,5,10,0.68)}
+.video-pill.primary{background:var(--acid);color:var(--ink);border-color:var(--acid)}
+.video-pill.primary:hover{color:var(--ink);background:var(--acid2)}
+.video-intro-badge{
+  position:absolute;left:3.5rem;top:110px;z-index:2;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 14px;border:1px solid rgba(200,255,62,0.18);
+  background:rgba(4,5,10,0.42);backdrop-filter:blur(16px);
+}
+.video-intro-badge strong{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.12em;color:var(--paper)}
+.video-intro-badge span{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--acid)}
+.video-intro-scroll{
+  position:absolute;left:50%;bottom:1.35rem;transform:translateX(-50%);z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted)
+}
+.video-intro-scroll .line{width:1px;height:54px;background:linear-gradient(to bottom,var(--acid),transparent);animation:scrollGrow 2s ease-in-out infinite}
+.video-intro-scroll .txt{font-size:9px;letter-spacing:0.22em;text-transform:uppercase}
+.video-intro::after{content:'';position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(to bottom, transparent, var(--ink));z-index:1}
+
+/* ══════════════════════════════════
+   HERO SECTION
+══════════════════════════════════ */
+.hero{
+  position:relative;z-index:10;
+  min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:100px 3.5rem 6rem;
+  text-align:center;overflow:hidden;
+}
+
+/* GLITCH TITLE */
+.hero-h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(72px,12vw,180px);
+  line-height:0.88;
+  letter-spacing:0.02em;
+  color:var(--paper);
+  position:relative;
+  margin-bottom:2rem;
+  animation:titleReveal 1.2s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes titleReveal{from{opacity:0;transform:translateY(80px) skewY(5deg);filter:blur(20px)}to{opacity:1;transform:none;filter:blur(0)}}
+.hero-h1 .acid-line{color:var(--acid);display:block;position:relative}
+.hero-h1 .acid-line::before,
+.hero-h1 .acid-line::after{
+  content:attr(data-text);
+  position:absolute;inset:0;
+}
+.hero-h1 .acid-line::before{
+  color:rgba(255,0,80,0.7);
+  clip-path:polygon(0 0,100% 0,100% 35%,0 35%);
+  animation:glitch1 4s infinite;
+}
+.hero-h1 .acid-line::after{
+  color:rgba(0,255,200,0.7);
+  clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);
+  animation:glitch2 4s infinite;
+}
+@keyframes glitch1{
+  0%,92%,100%{transform:none;opacity:0}
+  93%{transform:translateX(-4px);opacity:0.8}
+  95%{transform:translateX(4px);opacity:0.8}
+  97%{transform:translateX(-2px);opacity:0.8}
+  99%{transform:none;opacity:0}
+}
+@keyframes glitch2{
+  0%,93%,100%{transform:none;opacity:0}
+  94%{transform:translateX(6px);opacity:0.8}
+  96%{transform:translateX(-6px);opacity:0.8}
+  98%{transform:translateX(2px);opacity:0.8}
+  99.5%{transform:none;opacity:0}
+}
+
+/* Subtitle animated reveal */
+.hero-eyebrow{
+  font-size:11px;letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--acid);margin-bottom:2.5rem;
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  animation:eyeReveal 0.8s 0.3s ease both;
+}
+@keyframes eyeReveal{from{opacity:0;letter-spacing:0.5em}to{opacity:1;letter-spacing:0.28em}}
+.eye-line{width:40px;height:1px;background:var(--acid);opacity:0.5}
+
+.hero-desc{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  font-size:clamp(18px,2.2vw,28px);
+  line-height:1.5;color:var(--muted2);
+  max-width:620px;margin:0 auto 3rem;
+  animation:fadeUp 0.8s 0.5s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-actions{
+  display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp 0.8s 0.65s ease both;
+  margin-bottom:3rem;
+}
+.btn-main{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;gap:14px;
+  background:var(--acid);color:var(--ink);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.12em;
+  padding:18px 44px;border-radius:3px;text-decoration:none;
+  transition:transform 0.3s,box-shadow 0.3s;
+}
+.btn-main::after{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  width:0;height:0;
+  background:rgba(255,255,255,0.3);border-radius:50%;
+  transform:translate(-50%,-50%);
+  transition:width 0.6s ease,height 0.6s ease,opacity 0.6s ease;
+  opacity:0;
+}
+.btn-main:hover::after{width:400px;height:400px;opacity:0}
+.btn-main:hover{transform:scale(1.04) translateY(-2px);box-shadow:0 0 60px rgba(200,255,62,0.5),0 20px 40px rgba(0,0,0,0.4)}
+.btn-main svg{width:20px;height:20px;fill:var(--ink)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:12px;
+  background:transparent;color:var(--paper);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.12em;
+  padding:18px 40px;border-radius:3px;text-decoration:none;
+  border:1px solid var(--border2);
+  transition:all 0.3s;
+}
+.btn-outline:hover{border-color:var(--acid);color:var(--acid);transform:translateY(-2px)}
+
+/* TYPE CHIPS */
+.hero-type-grid{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  animation:fadeUp 0.8s 0.8s ease both;
+}
+.type-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--border);border-radius:2px;
+  padding:9px 18px;text-decoration:none;
+  background:rgba(242,238,216,0.02);
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.type-chip::before{
+  content:'';position:absolute;inset:0;
+  background:var(--acid);transform:scaleX(0);transform-origin:left;
+  transition:transform 0.3s cubic-bezier(0.77,0,0.18,1);
+}
+.type-chip:hover{color:var(--ink);border-color:var(--acid)}
+.type-chip:hover::before{transform:scaleX(1)}
+.type-chip span{position:relative;z-index:1}
+.type-chip-dot{width:4px;height:4px;border-radius:50%;background:var(--acid);flex-shrink:0;position:relative;z-index:1;transition:background 0.3s}
+.type-chip:hover .type-chip-dot{background:var(--ink)}
+
+/* HERO SCROLL */
+.hero-scroll-indicator{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  animation:fadeUp 0.8s 1.2s ease both;
+}
+.scroll-orb{
+  width:1px;height:60px;background:linear-gradient(to bottom,var(--acid),transparent);
+  animation:scrollGrow 2s ease-in-out infinite;
+}
+@keyframes scrollGrow{0%,100%{height:30px;opacity:0.3}50%{height:60px;opacity:1}}
+.scroll-txt{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted)}
+
+/* HERO FLOAT STATS */
+.hero-floats{
+  position:absolute;bottom:5rem;right:4rem;
+  display:flex;gap:2px;
+  animation:fadeUp 0.8s 1s ease both;
+}
+.hf{
+  background:rgba(4,5,10,0.7);
+  border:1px solid var(--border);
+  padding:1.5rem 2rem;text-align:center;
+  backdrop-filter:blur(20px);
+}
+.hf-val{
+  font-family:'Bebas Neue',sans-serif;font-size:48px;
+  color:var(--acid);line-height:1;letter-spacing:0.04em;
+}
+.hf-lbl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* ══════════════════════════════════
+   HORIZONTAL SCROLL TICKER
+══════════════════════════════════ */
+.ticker-wrap{
+  position:relative;z-index:10;
+  overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:20px 0;background:rgba(4,5,10,0.5);backdrop-filter:blur(10px);
+}
+.ticker-inner{display:flex;width:max-content;gap:0;animation:tickerAnim 20s linear infinite}
+.ticker-wrap:hover .ticker-inner{animation-play-state:paused}
+@keyframes tickerAnim{to{transform:translateX(-50%)}}
+.tick-item{
+  display:flex;align-items:center;gap:28px;padding:0 28px;border-right:1px solid var(--border);
+  font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:0.14em;
+  color:rgba(242,238,216,0.25);white-space:nowrap;
+}
+.tick-star{color:var(--acid);font-size:12px}
+
+/* ══════════════════════════════════
+   COBERTURAS — CINEMATIC GRID
+══════════════════════════════════ */
+.coberturas{
+  position:relative;z-index:10;
+  padding:10rem 3.5rem 8rem;
+}
+.sec-label{
+  font-size:10px;letter-spacing:0.28em;text-transform:uppercase;
+  color:var(--acid);margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:14px;
+}
+.sec-label::before{content:'';width:32px;height:1px;background:var(--acid)}
+.sec-h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(56px,8vw,120px);
+  line-height:0.88;letter-spacing:0.02em;
+  color:var(--paper);margin-bottom:5rem;
+}
+.sec-h2 em{color:var(--acid);font-style:normal}
+
+/* Bento-style grid */
+.cob-bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;align-items:stretch}
+.cb{
+  background:rgba(242,238,216,0.025);
+  border:1px solid var(--border);
+  padding:3rem 2.5rem;
+  text-decoration:none;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  position:relative;overflow:hidden;
+
+  transition:background 0.4s,border-color 0.4s;
+  group:card;
+}
+.cb{min-height:320px;}
+/* Glow on hover */
+.cb::before{
+  content:'';position:absolute;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,255,62,0.12),transparent 65%);
+  top:var(--gy,50%);left:var(--gx,50%);
+  transform:translate(-50%,-50%);
+  opacity:0;transition:opacity 0.4s;pointer-events:none;
+}
+.cb:hover{background:rgba(242,238,216,0.04);border-color:rgba(200,255,62,0.15)}
+.cb:hover::before{opacity:1}
+
+/* Top line accent */
+.cb::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--acid),rgba(200,255,62,0.2),transparent);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
+}
+.cb:hover::after{transform:scaleX(1)}
+
+.cb-num{font-size:10px;letter-spacing:0.2em;color:rgba(242,238,216,0.18);margin-bottom:auto}
+.cb-icon{
+  width:58px;height:58px;border-radius:50%;
+  border:1px solid rgba(200,255,62,0.2);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:2rem;transition:all 0.4s;
+  background:rgba(200,255,62,0.04);
+}
+.cb:hover .cb-icon{background:rgba(200,255,62,0.1);border-color:rgba(200,255,62,0.5);transform:rotate(-8deg) scale(1.1)}
+.cb-icon svg{width:26px;height:26px;stroke:var(--acid);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.cb-cat{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--acid);opacity:0.7;margin-bottom:0.5rem}
+.cb-title{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3vw,42px);
+  letter-spacing:0.04em;color:var(--paper);margin-bottom:0.75rem;line-height:1;
+}
+.cb-desc{font-size:13px;line-height:1.65;color:var(--muted2);font-weight:400;margin-bottom:1.5rem;max-width:380px}
+.cb-tags{display:flex;flex-wrap:wrap;gap:6px}
+.cb-tag{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(242,238,216,0.28);border:1px solid var(--border);border-radius:2px;padding:3px 9px}
+.cb-arrow{
+  position:absolute;top:2.5rem;right:2.5rem;
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.5) rotate(-45deg);
+  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.cb:hover .cb-arrow{opacity:1;transform:scale(1) rotate(0)}
+.cb-arrow svg{width:16px;height:16px;stroke:var(--acid);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ══════════════════════════════════
+   NOSOTROS — CINEMATIC SPLIT
+══════════════════════════════════ */
+.nosotros{
+  position:relative;z-index:10;
+  padding:10rem 3.5rem;
+  border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;gap:8rem;align-items:start;
+}
+.nos-big-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(120px,18vw,260px);
+  line-height:0.8;letter-spacing:-0.01em;
+  color:rgba(242,238,216,0.04);
+  position:absolute;left:-0.02em;top:8rem;
+  pointer-events:none;
+  user-select:none;
+}
+.nos-quote{
+  font-family:'Instrument Serif',serif;font-style:italic;
+  font-size:clamp(32px,4vw,56px);
+  line-height:1.1;letter-spacing:-0.02em;
+  color:var(--paper);margin-bottom:2.5rem;
+  position:relative;z-index:1;
+}
+.nos-quote em{color:var(--acid);font-style:italic}
+.nos-body{font-size:15px;line-height:1.8;color:var(--muted2);margin-bottom:1.5rem}
+.nos-pulse{
+  display:inline-flex;align-items:center;gap:14px;
+  background:rgba(200,255,62,0.04);border:1px solid rgba(200,255,62,0.15);
+  border-radius:3px;padding:1.25rem 2rem;margin-top:2rem;
+}
+.nos-pulse-dot{
+  width:10px;height:10px;border-radius:50%;background:var(--acid);flex-shrink:0;
+  box-shadow:0 0 16px var(--acid);
+  animation:acidPulse 1.8s ease infinite;
+}
+@keyframes acidPulse{0%,100%{opacity:1;box-shadow:0 0 8px var(--acid)}50%{opacity:0.4;box-shadow:0 0 20px var(--acid),0 0 40px rgba(200,255,62,0.3)}}
+.nos-pulse-txt{font-size:12px;letter-spacing:0.1em;color:var(--acid)}
+
+/* ACCORDION PILLARS */
+.pillar{
+  border-top:1px solid var(--border);padding:2rem 0;cursor:pointer;
+  transition:all 0.3s;
+}
+.pillar:last-child{border-bottom:1px solid var(--border)}
+.pillar-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.pillar-n{font-size:10px;letter-spacing:0.16em;color:rgba(200,255,62,0.45);font-family:'Space Mono',monospace}
+.pillar-t{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.06em;color:var(--paper);transition:color 0.3s}
+.pillar-plus{
+  width:32px;height:32px;border:1px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--muted);font-size:20px;
+  transition:all 0.4s;
+}
+.pillar.open .pillar-plus{transform:rotate(45deg);border-color:var(--acid);color:var(--acid)}
+.pillar.open .pillar-t{color:var(--acid)}
+.pillar-body{
+  font-size:14px;line-height:1.72;color:var(--muted2);
+  max-height:0;overflow:hidden;
+  transition:max-height 0.5s cubic-bezier(0.77,0,0.18,1),padding 0.4s;
+}
+.pillar.open .pillar-body{max-height:200px;padding-top:1rem}
+
+/* ══════════════════════════════════
+   NUMEROS — TYPOGRAPHIC GRID
+══════════════════════════════════ */
+.numeros{
+  position:relative;z-index:10;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);
+}
+.num{
+  padding:5rem 3rem;border-right:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.num:last-child{border-right:none}
+.num::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:0;
+  background:var(--acid);transition:height 0.6s cubic-bezier(0.77,0,0.18,1);
+}
+.num:hover::before{height:3px}
+.num-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:80px;color:var(--acid);
+  line-height:0.9;letter-spacing:-0.01em;margin-bottom:1rem;
+  transition:transform 0.3s;
+}
+.num:hover .num-big{transform:scale(1.08) translateY(-4px)}
+.num-lbl{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+
+
+
+/* VIDEO */
+.video-sec{position:relative;z-index:10;padding:8rem 3.5rem 2rem}
+.video-shell{position:relative;border:1px solid var(--border);background:rgba(242,238,216,0.02);overflow:hidden}
+.video-shell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acid),rgba(200,255,62,0.18),transparent)}
+.brand-video{display:block;width:100%;max-height:78vh;object-fit:cover;background:#000}
+.video-copy{display:grid;grid-template-columns:1.2fr 0.8fr;gap:2rem;padding:2rem 2.2rem;border-top:1px solid var(--border)}
+.video-note{font-size:14px;line-height:1.7;color:var(--muted2);max-width:58ch}
+.video-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.btn-small{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border:1px solid var(--border2);text-decoration:none;color:var(--paper);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;transition:all .3s}
+.btn-small:hover{border-color:var(--acid);color:var(--acid)}
+
+/* PRODUCTORES */
+.portal{position:relative;z-index:10;padding:8rem 3.5rem;border-top:1px solid var(--border);margin-top:6rem;opacity:.94}
+.portal-shell{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;border:1px solid var(--border);padding:2.4rem 2.6rem;background:linear-gradient(180deg,rgba(242,238,216,0.03),rgba(242,238,216,0.015))}
+.portal-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,64px);line-height:.95;letter-spacing:.04em;color:var(--paper);margin-bottom:.6rem}
+.portal-title em{font-style:normal;color:var(--acid)}
+.portal-copy{font-size:14px;line-height:1.7;color:var(--muted2);max-width:60ch}
+.portal-cta{display:inline-flex;align-items:center;gap:12px;background:var(--acid);color:var(--ink);text-decoration:none;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;padding:18px 28px}
+.portal-cta:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(200,255,62,0.24)}
+
+/* ══════════════════════════════════
+   ASEGURADORAS
+══════════════════════════════════ */
+.aseg{
+  position:relative;z-index:10;
+  padding:8rem 3.5rem;
+  border-top:1px solid var(--border);overflow:hidden;
+}
+.aseg-head{text-align:center;margin-bottom:4rem}
+.rail{position:relative;overflow:hidden;margin-bottom:3px;border:1px solid var(--border)}
+.rail::before,.rail::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2}
+.rail::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
+.rail::after{right:0;background:linear-gradient(270deg,var(--ink),transparent)}
+.rail-t{display:flex;width:max-content;animation:r1 40s linear infinite}
+.rail.rev .rail-t{animation:r2 40s linear infinite}
+.rail:hover .rail-t{animation-play-state:paused}
+@keyframes r1{to{transform:translateX(-50%)}}
+@keyframes r2{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.aseg-item{
+  flex:0 0 220px;height:100px;display:flex;align-items:center;justify-content:center;
+  border-right:1px solid var(--border);padding:1.5rem;
+  transition:background 0.3s;
+}
+.aseg-item:hover{background:rgba(200,255,62,0.04)}
+.aseg-item span{
+  font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.1em;
+  color:rgba(242,238,216,0.22);transition:color 0.3s;text-transform:uppercase;
+}
+.aseg-item:hover span{color:var(--acid)}
+
+/* ══════════════════════════════════
+   CONTACTO
+══════════════════════════════════ */
+.contacto{
+  position:relative;z-index:10;
+  padding:10rem 3.5rem;border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;
+}
+.contact-info{position:relative}
+.contact-giant{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(60px,9vw,130px);
+  line-height:0.88;letter-spacing:0.02em;
+  color:var(--paper);margin-bottom:2rem;
+}
+.contact-giant em{color:var(--acid);font-style:normal;display:block}
+.contact-desc{font-size:15px;line-height:1.78;color:var(--muted2);margin-bottom:3rem}
+.cc-link{
+  display:flex;align-items:center;gap:1.25rem;
+  padding:1.5rem 2rem;border:1px solid var(--border);
+  text-decoration:none;transition:all 0.35s;
+  margin-bottom:3px;position:relative;overflow:hidden;
+}
+.cc-link::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:0;
+  background:var(--acid);transition:width 0.4s cubic-bezier(0.77,0,0.18,1);
+}
+.cc-link:hover{border-color:var(--acid)}
+.cc-link:hover::before{width:4px}
+.cc-icon-sq{
+  width:48px;height:48px;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:rgba(200,255,62,0.04);transition:all 0.3s;
+}
+.cc-link:hover .cc-icon-sq{background:rgba(200,255,62,0.1);border-color:rgba(200,255,62,0.3)}
+.cc-icon-sq svg{width:20px;height:20px;stroke:var(--acid);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.cc-icon-sq a svg,.cc-icon-sq svg path,.cc-icon-sq svg rect,.cc-icon-sq svg circle{vector-effect:non-scaling-stroke}
+.cc-lbl{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.cc-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.06em;color:var(--paper)}
+.cc-go{margin-left:auto;color:var(--acid);font-size:20px;opacity:0;transform:translateX(-10px);transition:all 0.3s;flex-shrink:0}
+.cc-link:hover .cc-go{opacity:1;transform:translateX(0)}
+
+/* FORM */
+.form-shell{
+  border:1px solid var(--border);padding:0;
+  position:relative;overflow:hidden;
+}
+.form-shell::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--acid),transparent);
+  animation:shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer{0%,100%{opacity:0.3}50%{opacity:1}}
+.form-head{
+  padding:2.5rem 3rem 0;border-bottom:1px solid var(--border);
+  padding-bottom:2rem;margin-bottom:2.5rem;
+}
+.form-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.06em;color:var(--paper);margin-bottom:4px}
+.form-sub{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+.form-body{padding:0 3rem 3rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fg{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.fg label{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.fg input,.fg select,.fg textarea{
+  background:rgba(242,238,216,0.03);border:1px solid var(--border);
+  border-top:none;border-left:none;border-right:none;border-bottom:1px solid var(--border2);
+  padding:14px 0;
+  font-family:'Space Mono',monospace;font-size:13px;color:var(--paper);
+  outline:none;transition:border-color 0.3s;resize:none;width:100%;
+}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(242,238,216,0.18)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-bottom-color:var(--acid)}
+.fg select{appearance:none;cursor:pointer;background:transparent}
+.fg select option{background:#04050a;color:var(--paper)}
+.btn-send{
+  width:100%;background:var(--acid);color:var(--ink);
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.12em;
+  padding:20px;border:none;cursor:none;
+  transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:12px;
+  position:relative;overflow:hidden;
+}
+.btn-send::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0.15);
+  transform:translateX(-100%) skewX(-20deg);
+  transition:transform 0.6s ease;
+}
+.btn-send:hover::before{transform:translateX(150%) skewX(-20deg)}
+.btn-send:hover{background:var(--acid2);box-shadow:0 0 40px rgba(200,255,62,0.5)}
+.btn-send svg{width:20px;height:20px;fill:var(--ink)}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:10;
+  padding:3rem 3.5rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem;
+}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.12em;color:var(--paper);text-decoration:none}
+.foot-logo em{color:var(--acid);font-style:normal}
+.foot-links{display:flex;gap:3rem}
+.foot-links a{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.foot-links a:hover{color:var(--acid)}
+.foot-copy{font-size:10px;letter-spacing:0.08em;color:rgba(242,238,216,0.2)}
+
+/* WA */
+.wa{
+  position:fixed;bottom:2rem;right:2rem;z-index:500;
+  width:60px;height:60px;border-radius:50%;
+  background:var(--green2);text-decoration:none;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 0 rgba(29,92,10,0.4);
+  animation:waPing 3s ease-in-out infinite;
+  transition:transform 0.2s;
+}
+
+
+.wa:hover{transform:scale(1.1)}
+.wa svg{width:28px;height:28px;fill:#fff}
+@keyframes waPing{0%,100%{box-shadow:0 0 0 0 rgba(29,92,10,0.4)}70%{box-shadow:0 0 0 16px rgba(29,92,10,0)}}
+
+/* RESPONSIVE */
+
+.reviews{
+  position:relative;
+  z-index:10;
+  padding:10rem 3.5rem;
+  border-top:1px solid var(--border);
+}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;}
+.review{position:relative;padding:2.4rem 2.2rem;min-height:240px;border:1px solid var(--border);background:rgba(242,238,216,0.02);transition:background 0.35s,border-color 0.35s;overflow:hidden;cursor:default;}
+.review::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--acid),rgba(200,255,62,0.18),transparent);transform:scaleX(0);transform-origin:left;transition:transform 0.45s cubic-bezier(0.77,0,0.18,1);}
+.review:hover{background:rgba(242,238,216,0.04);border-color:rgba(200,255,62,0.16);transform:none;}
+.review:hover::before{transform:scaleX(1);}
+.review-quote{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(20px,1.7vw,28px);line-height:1.35;color:var(--paper);margin-bottom:2rem;max-width:24ch;}
+.review-meta{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--acid);opacity:0.82;}
+.review.wide{grid-column:span 1;min-height:240px;}
+
+
+
+@media(max-width:1500px){
+  .hero{padding-bottom:12rem}
+  .hero-actions,.hero-type-grid,.hero-floats{max-width:760px;margin-left:auto;margin-right:auto}
+  .hero-type-grid{justify-content:center}
+  .hero-floats{
+    position:relative;
+    right:auto;
+    bottom:auto;
+    top:auto;
+    left:auto;
+    justify-content:center;
+    margin:1rem auto 0;
+    flex-wrap:nowrap;
+    width:100%;
+  }
+  .hf{
+    min-width:0;
+    flex:1 1 0;
+  }
+}
+
+@media(max-width:1100px){
+  .video-intro-content{grid-template-columns:1fr;align-items:end;padding-top:9rem}
+  .video-intro-copy{justify-self:start;max-width:560px}
+}
+@media(max-width:700px){
+  .video-intro{min-height:92svh}
+  .video-intro-content{padding:7.5rem 1.5rem 3rem}
+  .video-intro-badge{left:1.5rem;right:1.5rem;top:92px;justify-content:center}
+  .video-intro-title{font-size:clamp(54px,16vw,92px)}
+  .video-kicker{letter-spacing:0.18em;gap:8px}
+  .video-pill{min-width:0;flex:1 1 100%}
+}
+
+@media(max-width:1100px){
+  .cob-bento{grid-template-columns:1fr 1fr}
+  .cb:nth-child(n){grid-column:span 1;grid-row:span 1}
+  .nosotros,.contacto{grid-template-columns:1fr;gap:4rem}
+  .numeros{grid-template-columns:1fr 1fr}
+  .reviews-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+}
+
+@media(max-width:700px){
+  nav{padding:0 1.5rem}
+  .hero,.coberturas,.nosotros,.aseg,.contacto,.reviews{padding-left:1.5rem;padding-right:1.5rem}
+  .cob-bento,.reviews-grid,.numeros{grid-template-columns:1fr}
+  .hero-floats{display:none}
+  .hero-h1{font-size:clamp(60px,16vw,120px)}
+  .frow{grid-template-columns:1fr}
+  .nav-wordmark{font-size:20px}
+  .nav-cta{padding:10px 16px;font-size:14px}
+}
+</style>
+</head>
+<body>
+<!-- CURSOR -->
+<div id="cursor-wrap">
+<div id="c-trail"></div>
+<div id="c-blob"></div>
+<div id="c-text">COTIZAR</div>
+</div>
+<!-- SCANLINES + NOISE -->
+<div id="noise"></div>
+<div id="scanlines"></div>
+<!-- THREE.JS CANVAS -->
+<canvas id="three-canvas"></canvas>
+<!-- NAV -->
+<nav id="nav">
+<a class="nav-logo" data-cursor-text="Inicio" href="#">
+<div class="nav-logo-mark"><img alt="Fuerza Natural Broker de Seguros" src="logofuerzanatural.png"/></div>
+<span class="nav-wordmark">Fuerza Natural Broker</span>
+</a>
+<ul class="nav-links">
+<li><a data-cursor-text="Ir" href="#coberturas">Coberturas</a></li>
+<li><a data-cursor-text="Ir" href="#nosotros">Nosotros</a></li>
+<li><a data-cursor-text="Ir" href="#aseg">Aseguradoras</a></li>
+<li><a data-cursor-text="Ir" href="#contacto">Contacto</a></li>
+<li><a data-cursor-text="Ingresar" href="#productores">Productores</a></li>
+</ul>
+<a class="nav-cta" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro.%20%C2%BFMe%20asesoran%3F" rel="noopener" target="_blank"><span>Cotizar ahora</span></a>
+</nav>
+<!-- VIDEO INTRO -->
+<section class="video-intro">
+<div class="video-intro-grid"></div>
+<video autoplay="" class="video-intro-media" loop="" muted="" playsinline="" preload="auto">
+<source src="Video_Oscarizado_de_Fuerza_Natural.mp4" type="video/mp4"/>
+</video>
+<div class="video-intro-overlay"></div>
+<div class="video-intro-vignette"></div>
+<div class="video-intro-badge">
+<span>Broker de seguros</span>
+<strong>Luján de Cuyo, Mendoza · Argentina</strong>
+</div>
+<div class="video-intro-content">
+<div>
+<div class="video-kicker">Universo Fuerza Natural</div>
+<h1 class="video-intro-title">Elegí mejor tu seguro con<em>asesoramiento real</em></h1>
+</div>
+<div class="video-intro-copy">
+<p>Si no estás seguro de qué seguro te conviene, probablemente estás pagando mal.<br/>Te lo analizamos y resolvés hoy mismo por WhatsApp.</p>
+<div class="video-intro-actions">
+<a class="video-pill primary" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro.%20%C2%BFMe%20asesoran%3F" rel="noopener" target="_blank">Cotizar ahora</a>
+<a class="video-pill" data-cursor-text="Ver" href="#hero-main">Ver cómo trabajamos</a>
+</div>
+</div>
+</div>
+<div class="video-intro-scroll">
+<div class="line"></div>
+<div class="txt">Scroll</div>
+</div>
+</section>
+<!-- HERO -->
+<section class="hero" id="hero-main">
+<div class="hero-eyebrow">
+<div class="eye-line"></div>
+    Broker de seguros · Luján de Cuyo, Mendoza, Argentina · Respuesta rápida
+    <div class="eye-line"></div>
+</div>
+<h1 class="hero-h1">
+    Elegí mejor tu seguro.<br/>Pagá lo justo.<br/>
+    <span class="acid-line" data-text="criterio real">criterio real</span>
+</h1>
+<p class="hero-desc">
+    Probablemente estás pagando de más por tu seguro o no sabés qué cubre realmente.<br/>Nosotros lo analizamos y te decimos cuál te conviene de verdad.
+  </p>
+<div style="margin-bottom:20px;font-size:12px;letter-spacing:0.12em;color:rgba(242,238,216,0.7);display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+<span>✔ Clientes en Mendoza</span>
+<span>✔ +15 aseguradoras comparadas</span>
+<span>✔ Te respondemos en minutos</span>
+</div>
+
+<div class="hero-actions">
+<a class="btn-main" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro.%20%C2%BFMe%20pueden%20ayudar%3F" rel="noopener" target="_blank">
+<svg viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+      Quiero saber cuál me conviene
+    </a>
+<a class="btn-outline" data-cursor-text="Ver" href="#coberturas">Ver coberturas →</a>
+
+<div style="margin-top:20px;font-size:12px;letter-spacing:0.12em;color:rgba(242,238,216,0.7);display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+<span>✔ +15 aseguradoras</span>
+<span>✔ Respuesta rápida por WhatsApp</span>
+<span>✔ Asesoramiento real 1 a 1</span>
+</div>
+<div style="margin-top:12px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--acid);text-align:center;">
+Respondemos en minutos · asesoramiento real 1 a 1
+</div>
+
+<div class="hero-type-grid">
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20automotor." target="_blank"><span class="type-chip-dot"></span><span>Automotor</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20de%20hogar." target="_blank"><span class="type-chip-dot"></span><span>Hogar</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20para%20mi%20empresa." target="_blank"><span class="type-chip-dot"></span><span>Empresa</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20agropecuario." target="_blank"><span class="type-chip-dot"></span><span>Agro</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20una%20ART." target="_blank"><span class="type-chip-dot"></span><span>ART</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20de%20vida." target="_blank"><span class="type-chip-dot"></span><span>Vida</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20de%20vida." target="_blank"><span class="type-chip-dot"></span><span>Todo Patrimoniales</span></a>
+<a class="type-chip" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20de%20vida." target="_blank"><span class="type-chip-dot"></span><span>Personas</span></a>
+</div>
+<div class="hero-floats">
+<div class="hf"><div class="hf-val">15+</div><div class="hf-lbl">Aseguradoras</div></div>
+<div class="hf"><div class="hf-val">6</div><div class="hf-lbl">Ramos</div></div>
+<div class="hf"><div class="hf-val">24h</div><div class="hf-lbl">Respuesta</div></div>
+</div>
+<div class="hero-scroll-indicator">
+<div class="scroll-orb"></div>
+<span class="scroll-txt">Scroll</span>
+</div>
+</section>
+<!-- TICKER -->
+<div aria-hidden="true" class="ticker-wrap">
+<div class="ticker-inner">
+<div class="tick-item"><span class="tick-star">✦</span>Automotor</div>
+<div class="tick-item"><span class="tick-star">✦</span>Hogar</div>
+<div class="tick-item"><span class="tick-star">✦</span>Empresa</div>
+<div class="tick-item"><span class="tick-star">✦</span>Agropecuario</div>
+<div class="tick-item"><span class="tick-star">✦</span>ART</div>
+<div class="tick-item"><span class="tick-star">✦</span>Vida</div>
+<div class="tick-item"><span class="tick-star">✦</span>Todo Patrimoniales</div>
+<div class="tick-item"><span class="tick-star">✦</span>Personas</div>
+<div class="tick-item"><span class="tick-star">✦</span>+15 Aseguradoras</div>
+<div class="tick-item"><span class="tick-star">✦</span>Mendoza Argentina</div>
+<div class="tick-item"><span class="tick-star">✦</span>Asesoramiento Real</div>
+<div class="tick-item"><span class="tick-star">✦</span>Automotor</div>
+<div class="tick-item"><span class="tick-star">✦</span>Hogar</div>
+<div class="tick-item"><span class="tick-star">✦</span>Empresa</div>
+<div class="tick-item"><span class="tick-star">✦</span>Agropecuario</div>
+<div class="tick-item"><span class="tick-star">✦</span>ART</div>
+<div class="tick-item"><span class="tick-star">✦</span>Vida</div>
+<div class="tick-item"><span class="tick-star">✦</span>Todo Patrimoniales</div>
+<div class="tick-item"><span class="tick-star">✦</span>Personas</div>
+<div class="tick-item"><span class="tick-star">✦</span>+15 Aseguradoras</div>
+<div class="tick-item"><span class="tick-star">✦</span>Mendoza Argentina</div>
+<div class="tick-item"><span class="tick-star">✦</span>Asesoramiento Real</div>
+</div>
+</div>
+<!-- COBERTURAS -->
+<section class="coberturas" id="coberturas">
+<div class="sec-label">Coberturas</div>
+<h2 class="sec-h2">Lo que<br/><em>cubrimos</em></h2>
+<div class="cob-bento">
+<a class="cb" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20mi%20seguro%20automotor." rel="noopener" target="_blank">
+<div class="cb-arrow"><svg viewbox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<div class="cb-num">01 —</div>
+<div>
+<div class="cb-icon"><svg viewbox="0 0 24 24"><rect height="13" width="15" x="1" y="3"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg></div>
+<div class="cb-cat">Patrimoniales</div>
+<div class="cb-title">Automotor</div>
+<div class="cb-desc">Autos, motos, camiones y flotas. Desde RC hasta todo riesgo, con asistencia al viajero 24h.</div>
+<div class="cb-tags"><span class="cb-tag">RC</span><span class="cb-tag">Todo riesgo</span><span class="cb-tag">Asistencia</span><span class="cb-tag">Flotas</span></div>
+</div>
+</a>
+<a class="cb" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20de%20hogar." rel="noopener" target="_blank">
+<div class="cb-arrow"><svg viewbox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<div class="cb-num">02 —</div>
+<div>
+<div class="cb-icon"><svg viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+<div class="cb-cat">Personas</div>
+<div class="cb-title">Hogar</div>
+<div class="cb-desc">Incendio, robo, daños eléctricos y RC del hogar.</div>
+<div class="cb-tags"><span class="cb-tag">Incendio</span><span class="cb-tag">Robo</span><span class="cb-tag">RC</span></div>
+</div>
+</a>
+<a class="cb" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20para%20mi%20empresa." rel="noopener" target="_blank">
+<div class="cb-arrow"><svg viewbox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<div class="cb-num">03 —</div>
+<div>
+<div class="cb-icon"><svg viewbox="0 0 24 24"><rect height="14" rx="2" width="20" x="2" y="7"></rect><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"></path></svg></div>
+<div class="cb-cat">Empresas</div>
+<div class="cb-title">Empresa</div>
+<div class="cb-desc">Instalaciones, equipos, comercio y RC empresarial para PyMEs y emprendedores.</div>
+<div class="cb-tags"><span class="cb-tag">RC Civil</span><span class="cb-tag">Equipos</span><span class="cb-tag">Comercio</span></div>
+</div>
+</a>
+<a class="cb" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20agropecuario." rel="noopener" target="_blank">
+<div class="cb-arrow"><svg viewbox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<div class="cb-num">04 —</div>
+<div>
+<div class="cb-icon"><svg viewbox="0 0 24 24"><path d="M12 22V12M12 12C12 8 9 4 4 3c0 5 4 9 8 9M12 12c0-4 3-8 8-9-1 5-4 9-8 9"></path></svg></div>
+<div class="cb-cat">Agro</div>
+<div class="cb-title">Agropecuario</div>
+<div class="cb-desc">Granizo, heladas, ganadería y maquinaria rural para la actividad productiva mendocina.</div>
+<div class="cb-tags"><span class="cb-tag">Granizo</span><span class="cb-tag">Ganadería</span><span class="cb-tag">Maquinaria</span></div>
+</div>
+</a>
+<a class="cb" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20una%20ART." rel="noopener" target="_blank">
+<div class="cb-arrow"><svg viewbox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<div class="cb-num">05 —</div>
+<div>
+<div class="cb-icon"><svg viewbox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+<div class="cb-cat">Laboral</div>
+<div class="cb-title">ART</div>
+<div class="cb-desc">Riesgos del trabajo para empleados y empleadores. Cobertura legal completa.</div>
+<div class="cb-tags"><span class="cb-tag">Empleados</span><span class="cb-tag">Accidentes lab.</span></div>
+</div>
+</a>
+<a class="cb" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro%20de%20vida." rel="noopener" target="_blank">
+<div class="cb-arrow"><svg viewbox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></div>
+<div class="cb-num">06 —</div>
+<div>
+<div class="cb-icon"><svg viewbox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path></svg></div>
+<div class="cb-cat">Personas</div>
+<div class="cb-title">Vida</div>
+<div class="cb-desc">Seguros de vida individual, colectivo, retiro y protección patrimonial a largo plazo.</div>
+<div class="cb-tags"><span class="cb-tag">Vida</span><span class="cb-tag">Retiro</span><span class="cb-tag">Mixto</span></div>
+</div>
+</a>
+</div>
+</section>
+<!-- NUMEROS -->
+<div class="numeros">
+<div class="num"><div class="num-big">15+</div><div class="num-lbl">Aseguradoras aliadas</div></div>
+<div class="num"><div class="num-big">6</div><div class="num-lbl">Ramos disponibles</div></div>
+<div class="num"><div class="num-big">24h</div><div class="num-lbl">Atención de siniestros</div></div>
+<div class="num"><div class="num-big">1:1</div><div class="num-lbl">Asesoramiento real</div></div>
+</div>
+<!-- EXPERIENCIAS -->
+<section class="reviews">
+<div class="sec-label">Experiencias</div>
+<h2 class="sec-h2">Elegido por<br/><em>clientes reales</em></h2>
+<div class="reviews-grid">
+<article class="review">
+<p class="review-quote">“Estaba pagando un seguro que no me servía. Me lo cambiaron por uno mejor y más barato.”</p>
+<span class="review-meta">Martín G. · Mendoza</span>
+</article>
+<article class="review">
+<p class="review-quote">“Compararon varias alternativas y me recomendaron la que más sentido tenía para mi caso.”</p>
+<span class="review-meta">Carola M. · Godoy Cruz</span>
+</article>
+<article class="review">
+<p class="review-quote">“En el momento del siniestro estuvieron presentes y resolvieron rápido. Eso marca la diferencia.”</p>
+<span class="review-meta">Diego Z. · Maipú</span>
+</article>
+<article class="review">
+<p class="review-quote">“Necesitábamos cobertura para la empresa y armaron una propuesta concreta, sin vueltas.”</p>
+<span class="review-meta">Antonella F. · Santa Rosa</span>
+</article>
+<article class="review">
+<p class="review-quote">“Asesoramiento claro, respuesta rápida y acompañamiento real durante todo el proceso.”</p>
+<span class="review-meta">Nicolás T. · Luján de Cuyo</span>
+</article>
+<article class="review">
+<p class="review-quote">“Me gustó que fueran directos, claros y que realmente compararan opciones antes de recomendar.”</p>
+<span class="review-meta">Valeria C. · Guaymallén</span>
+</article>
+</div>
+</section>
+<!-- NOSOTROS -->
+<section class="nosotros" id="nosotros">
+<div style="position:relative">
+<div aria-hidden="true" class="nos-big-num">FN</div>
+<div class="sec-label">Quiénes somos</div>
+<h2 class="nos-quote">No vendemos seguros.<br/>Encontramos <em>el adecuado</em><br/>para cada uno.</h2>
+<p class="nos-body">Somos un broker independiente con base en Luján de Cuyo, Mendoza. Trabajamos de manera personal para entender cada situación y acompañarte en la decisión, sin presiones y con información clara.</p>
+<p class="nos-body">Nuestra independencia nos permite comparar entre las mejores aseguradoras del mercado y ofrecerte alternativas reales, no una sola opción.</p>
+<div class="nos-pulse">
+<div class="nos-pulse-dot"></div>
+<span class="nos-pulse-txt">Disponibles ahora · WhatsApp +54 261 617-3100</span>
+</div>
+</div>
+<div>
+<div class="pillar open" onclick="togglePillar(this)">
+<div class="pillar-head"><span class="pillar-n">01</span><span class="pillar-t">Asesoramiento real</span><div class="pillar-plus">+</div></div>
+<div class="pillar-body">Te explicamos cada cobertura con claridad para que elijas rápido, entiendas qué estás pagando y tomes una decisión con confianza.</div>
+</div>
+<div class="pillar" onclick="togglePillar(this)">
+<div class="pillar-head"><span class="pillar-n">02</span><span class="pillar-t">Más criterio para elegir</span><div class="pillar-plus">+</div></div>
+<div class="pillar-body">Comparamos entre múltiples aseguradoras para mostrarte la opción que más te conviene según tu perfil, tu uso y tu presupuesto real.</div>
+</div>
+<div class="pillar" onclick="togglePillar(this)">
+<div class="pillar-head"><span class="pillar-n">03</span><span class="pillar-t">Acompañamiento continuo</span><div class="pillar-plus">+</div></div>
+<div class="pillar-body">Respondemos rápido y te acompañamos antes, durante y después de contratar. Si tenés un siniestro, no quedás solo.</div>
+</div>
+<div class="pillar" onclick="togglePillar(this)">
+<div class="pillar-head"><span class="pillar-n">04</span><span class="pillar-t">Independencia total</span><div class="pillar-plus">+</div></div>
+<div class="pillar-body">No respondemos a una sola compañía. Eso nos permite recomendarte lo que más te conviene a vos, no lo que más conviene vender.</div>
+</div>
+</div>
+</section>
+<!-- ASEGURADORAS -->
+<section class="aseg" id="aseg">
+<div class="aseg-head">
+<div class="sec-label" style="justify-content:center">Aseguradoras</div>
+<h2 class="sec-h2" style="text-align:center">Las mejores del<br/><em>mercado</em></h2>
+</div>
+<div class="rail">
+<div class="rail-t">
+<div class="aseg-item"><span>Assist Card</span></div><div class="aseg-item"><span>ATM Seguros</span></div>
+<div class="aseg-item"><span>Europ Assitance</span></div><div class="aseg-item"><span>Experta Seguros</span></div>
+<div class="aseg-item"><span>La Caja Seguros</span></div><div class="aseg-item"><span>MAPFRE</span></div>
+<div class="aseg-item"><span>Medicar Work</span></div><div class="aseg-item"><span>Mercantil Andina</span></div>
+<div class="aseg-item"><span>Assist Card</span></div><div class="aseg-item"><span>ATM Seguros</span></div>
+<div class="aseg-item"><span>Europ Assitance</span></div><div class="aseg-item"><span>Experta Seguros</span></div>
+<div class="aseg-item"><span>La Caja Seguros</span></div><div class="aseg-item"><span>MAPFRE</span></div>
+<div class="aseg-item"><span>Medicar Work</span></div><div class="aseg-item"><span>Mercantil Andina</span></div>
+</div>
+</div>
+<div class="rail rev" style="margin-top:3px">
+<div class="rail-t">
+<div class="aseg-item"><span>Rivadavia Seguros</span></div><div class="aseg-item"><span>Rio Uruguay Seguros</span></div>
+<div class="aseg-item"><span>Sancor Salud</span></div><div class="aseg-item"><span>Sancor Seguros</span></div>
+<div class="aseg-item"><span>San Cristobal</span></div><div class="aseg-item"><span>Triunfo Seguros</span></div>
+<div class="aseg-item"><span>Universal Assistance</span></div><div class="aseg-item"><span>Life Seguros</span></div>
+<div class="aseg-item"><span>Rivadavia Seguros</span></div><div class="aseg-item"><span>Rio Uruguay Seguros</span></div>
+<div class="aseg-item"><span>Sancor Salud</span></div><div class="aseg-item"><span>Sancor Seguros</span></div>
+<div class="aseg-item"><span>San Cristobal</span></div><div class="aseg-item"><span>Triunfo Seguros</span></div>
+<div class="aseg-item"><span>Universal Assistance</span></div><div class="aseg-item"><span>Life Seguros</span></div>
+</div>
+</div>
+</section>
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+<div class="contact-info">
+<div class="sec-label">Contacto</div>
+<h2 class="contact-giant">Cotizá<em>ahora</em></h2>
+<p class="contact-desc">Sin compromiso. Contanos qué necesitás y te armamos una propuesta clara, rápida y a medida.</p>
+<a class="cc-link" data-cursor-text="WhatsApp" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20hacer%20una%20consulta%20sobre%20una%20cotizaci%C3%B3n." rel="noopener" target="_blank">
+<div class="cc-icon-sq"><svg viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg></div>
+<div><div class="cc-lbl">WhatsApp</div><div class="cc-val">+54 261 617-3100</div></div>
+<div class="cc-go">→</div>
+</a>
+<a class="cc-link" data-cursor-text="Email" href="mailto:fuerzanaturalbroker@gmail.com">
+<div class="cc-icon-sq"><svg viewbox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+<div><div class="cc-lbl">Email</div><div class="cc-val">fuerzanaturalbroker@gmail.com</div></div>
+<div class="cc-go">→</div>
+</a>
+<a class="cc-link" data-cursor-text="Instagram" href="https://www.instagram.com/fuerza_natural_brokers/" rel="noopener" target="_blank">
+<div class="cc-icon-sq"><svg viewbox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1.2"></circle></svg></div>
+<div><div class="cc-lbl">Instagram</div><div class="cc-val">@fuerza_natural_brokers</div></div>
+<div class="cc-go">→</div>
+</a>
+<a class="cc-link" data-cursor-text="Facebook" href="https://www.facebook.com/fabianmartinezpas/" rel="noopener" target="_blank">
+<div class="cc-icon-sq"><svg viewbox="0 0 24 24"><path d="M13.5 21v-7h2.3l.4-3h-2.7V9.1c0-.9.3-1.5 1.6-1.5H16V5.1c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.7V11H8v3h2.3v7h3.2z"></path></svg></div>
+<div><div class="cc-lbl">Facebook</div><div class="cc-val">facebook.com/fabianmartinezpas</div></div>
+<div class="cc-go">→</div>
+</a>
+<div class="cc-link" style="cursor:default">
+<div class="cc-icon-sq"><svg viewbox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+<div><div class="cc-lbl">Ubicación</div><div class="cc-val">Luján de Cuyo, Mendoza, Argentina</div></div>
+</div>
+</div>
+<div class="form-shell">
+<div class="form-head">
+<div class="form-title">Pedí tu cotización</div>
+<div class="form-sub">Sin compromiso · Respuesta directa por WhatsApp</div>
+</div>
+<div class="form-body">
+<div class="frow">
+<div class="fg"><label>Nombre</label><input id="f-name" placeholder="Tu nombre" type="text"/></div>
+<div class="fg"><label>Teléfono</label><input id="f-phone" placeholder="+54 261..." type="tel"/></div>
+</div>
+<div class="fg">
+<label>Tipo de seguro</label>
+<select id="f-type">
+<option value="">Seleccioná...</option>
+<option>Automotor</option><option>Hogar</option><option>Empresa</option>
+<option>Agro</option><option>ART</option><option>Vida</option><option>Otro</option>
+</select>
+</div>
+<div class="fg"><label>Consulta</label><textarea id="f-msg" placeholder="¿Qué necesitás cubrir?" rows="3"></textarea></div>
+<button class="btn-send" data-cursor-text="Enviar" onclick="sendWA()">
+<svg fill="currentColor" height="20" viewbox="0 0 24 24" width="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+        Quiero mi cotización
+      </button>
+</div>
+</div>
+</section>
+<!-- PRODUCTORES -->
+<section class="portal" id="productores">
+<div class="portal-shell">
+<div>
+<div class="sec-label">Ingreso de productores</div>
+<h2 class="portal-title">Acceso al <em>CRM</em></h2>
+<p class="portal-copy">Si sos productor y ya formás parte de Fuerza Natural, ingresá directamente a la plataforma para gestionar oportunidades, clientes y seguimiento comercial.</p>
+</div>
+<a class="portal-cta" data-cursor-text="Ingresar" href="https://crm.fuerzanaturalbroker.com" rel="noopener" target="_blank">Ingresar al CRM</a>
+</div>
+</section>
+
+<footer>
+<a class="foot-logo" data-cursor-text="Inicio" href="#">Fuerza <em>Natural Broker</em></a>
+<nav class="foot-links">
+<a data-cursor-text="Ir" href="#coberturas">Coberturas</a>
+<a data-cursor-text="Ir" href="#nosotros">Nosotros</a>
+<a data-cursor-text="Ir" href="#aseg">Aseguradoras</a>
+<a data-cursor-text="Ir" href="#contacto">Contacto</a>
+<a data-cursor-text="Instagram" href="https://www.instagram.com/fuerza_natural_brokers/" rel="noopener" target="_blank">Instagram</a>
+<a data-cursor-text="Facebook" href="https://www.facebook.com/fabianmartinezpas/" rel="noopener" target="_blank">Facebook</a>
+<a data-cursor-text="Ingresar" href="#productores">Productores</a>
+</nav>
+<span class="foot-copy">© 2026 Fuerza Natura Broker · Luján de Cuyo, Mendoza, Argentina</span>
+</footer>
+<a aria-label="WhatsApp" class="wa" data-cursor-text="Cotizar" href="https://wa.me/542616173100?text=Hola%20Fuerza%20Natural%2C%20quiero%20cotizar%20un%20seguro.%20%C2%BFMe%20asesoran%3F" rel="noopener" target="_blank">
+<svg viewbox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
+</a>
+<!-- THREE.JS PARTICLE FIELD -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ════════════════════════════════
+   THREE.JS — PARTICLE FIELD 3D
+════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 2000);
+  camera.position.set(0, 0, 500);
+
+  /* PARTICLES */
+  const N = 3000;
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(N*3);
+  const col = new Float32Array(N*3);
+  const spd = new Float32Array(N);
+  const sz  = new Float32Array(N);
+
+  for(let i=0;i<N;i++){
+    pos[i*3]   = (Math.random()-0.5)*1600;
+    pos[i*3+1] = (Math.random()-0.5)*1000;
+    pos[i*3+2] = (Math.random()-0.5)*800;
+    spd[i] = Math.random()*0.4+0.05;
+    sz[i]  = Math.random()*2.5+0.5;
+    const acid = Math.random() > 0.82;
+    if(acid){col[i*3]=0.78;col[i*3+1]=1.0;col[i*3+2]=0.24}
+    else{col[i*3]=0.96;col[i*3+1]=0.94;col[i*3+2]=0.86}
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(col,3));
+  geo.setAttribute('size',     new THREE.BufferAttribute(sz,1));
+
+  const mat = new THREE.ShaderMaterial({
+    vertexShader:`
+      attribute float size;
+      attribute vec3 color;
+      varying vec3 vColor;
+      varying float vAlpha;
+      void main(){
+        vColor=color;
+        vec4 mv=modelViewMatrix*vec4(position,1.0);
+        vAlpha=clamp(1.0+mv.z/400.0,0.0,1.0);
+        gl_PointSize=size*(400.0/-mv.z);
+        gl_Position=projectionMatrix*mv;
+      }
+    `,
+    fragmentShader:`
+      varying vec3 vColor;
+      varying float vAlpha;
+      void main(){
+        float d=length(gl_PointCoord-0.5)*2.0;
+        float a=smoothstep(1.0,0.0,d);
+        gl_FragColor=vec4(vColor,a*vAlpha*0.75);
+      }
+    `,
+    transparent:true, depthWrite:false, vertexColors:true, blending:THREE.AdditiveBlending
+  });
+
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  /* BIG LINES GRID */
+  const lineMat = new THREE.LineBasicMaterial({color:0x1a5c0a, transparent:true, opacity:0.12});
+  for(let i=0;i<8;i++){
+    const lG = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-800, (i-3.5)*120, -200),
+      new THREE.Vector3(800,  (i-3.5)*120, -200)
+    ]);
+    scene.add(new THREE.Line(lG, lineMat));
+  }
+  for(let i=0;i<14;i++){
+    const lG = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3((i-6.5)*120, -500, -200),
+      new THREE.Vector3((i-6.5)*120,  500, -200)
+    ]);
+    scene.add(new THREE.Line(lG, lineMat));
+  }
+
+  /* MOUSE */
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{
+    mx=(e.clientX/innerWidth-0.5)*2;
+    my=-(e.clientY/innerHeight-0.5)*2;
+  });
+
+  /* RESIZE */
+  window.addEventListener('resize',()=>{
+    renderer.setSize(innerWidth,innerHeight);
+    camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+  });
+
+  /* ANIMATE */
+  let t=0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t+=0.008;
+    const p=geo.attributes.position.array;
+    for(let i=0;i<N;i++){
+      p[i*3+1] += spd[i]*0.3;
+      if(p[i*3+1]>500) p[i*3+1]=-500;
+    }
+    geo.attributes.position.needsUpdate=true;
+    points.rotation.y = mx*0.06 + Math.sin(t*0.3)*0.02;
+    points.rotation.x = my*0.04 + Math.sin(t*0.2)*0.015;
+    camera.position.x += (mx*60 - camera.position.x)*0.025;
+    camera.position.y += (my*40 - camera.position.y)*0.025;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+/* ════════════════════════════════
+   CUSTOM CURSOR
+════════════════════════════════ */
+(function(){
+  const trail = document.getElementById('c-trail');
+  const blob  = document.getElementById('c-blob');
+  const ctxt  = document.getElementById('c-text');
+  if(!trail || !blob || !ctxt) return;
+
+  let tx = window.innerWidth / 2;
+  let ty = window.innerHeight / 2;
+  let bx = tx;
+  let by = ty;
+  let active = false;
+
+  function getCursorText(el){
+    const explicit = el.getAttribute('data-cursor-text');
+    if(explicit) return explicit.toUpperCase();
+    const href = (el.getAttribute('href') || '').toLowerCase();
+    if(href.includes('wa.me')) return 'COTIZAR';
+    if(href.startsWith('mailto:')) return 'EMAIL';
+    if(href.includes('crm.fuerzanaturalbroker.com')) return 'INGRESAR';
+    if(href.startsWith('#')) return 'IR';
+    if(el.classList.contains('cb')) return 'VER';
+    if(el.classList.contains('pillar')) return 'VER';
+    if(el.classList.contains('num')) return 'VER';
+    if(el.tagName === 'BUTTON') return 'ENVIAR';
+    return 'COTIZAR';
+  }
+
+  function placeTrail(){
+    trail.style.left = tx + 'px';
+    trail.style.top = ty + 'px';
+  }
+
+  function updatePointer(e){
+    tx = e.clientX;
+    ty = e.clientY;
+    active = true;
+    placeTrail();
+  }
+
+  window.addEventListener('pointermove', updatePointer, {passive:true});
+  window.addEventListener('mousemove', updatePointer, {passive:true});
+  document.addEventListener('mouseenter', function(){
+    active = true;
+  });
+  document.addEventListener('mouseleave', function(){
+    active = false;
+    document.body.classList.remove('mag-hover');
+    ctxt.textContent = 'COTIZAR';
+  });
+
+  placeTrail();
+  blob.style.left = bx + 'px';
+  blob.style.top = by + 'px';
+  ctxt.style.left = bx + 'px';
+  ctxt.style.top = (by + 60) + 'px';
+
+  function animBlob(){
+    if(active){
+      bx += (tx - bx) * 0.09;
+      by += (ty - by) * 0.09;
+    }
+    blob.style.left = bx + 'px';
+    blob.style.top = by + 'px';
+    ctxt.style.left = bx + 'px';
+    ctxt.style.top = (by + 60) + 'px';
+    requestAnimationFrame(animBlob);
+  }
+  animBlob();
+
+  document.querySelectorAll('a,button,.cb,.pillar,.num,[data-cursor-text]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      document.body.classList.add('mag-hover');
+      ctxt.textContent = getCursorText(el);
+    });
+    el.addEventListener('mouseleave',()=>{
+      document.body.classList.remove('mag-hover');
+      ctxt.textContent = 'COTIZAR';
+    });
+  });
+
+  window.addEventListener('blur',()=>{
+    active = false;
+    document.body.classList.remove('mag-hover');
+    ctxt.textContent = 'COTIZAR';
+  });
+})();
+
+/* ════════════════════════════════
+   NAV SCROLL
+════════════════════════════════ */
+const navEl = document.getElementById('nav');
+function updateNavState(){
+  navEl.classList.add('solid');
+}
+window.addEventListener('scroll', updateNavState);
+updateNavState();
+
+/* ════════════════════════════════
+   BENTO CARD GLOW TRACKING
+════════════════════════════════ */
+document.querySelectorAll('.cb').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    card.style.setProperty('--gx',(e.clientX-r.left)+'px');
+    card.style.setProperty('--gy',(e.clientY-r.top)+'px');
+  });
+});
+
+/* ════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════ */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>{
+        e.target.style.opacity='1';
+        e.target.style.transform='translateY(0) translateX(0)';
+      }, i*60);
+    }
+  });
+},{threshold:0.06});
+document.querySelectorAll('.cb,.num,.pillar,.cc-link,.hf,.sec-label,.sec-h2,.nos-quote').forEach((el,i)=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(40px)';
+  el.style.transition='opacity 0.8s ease, transform 0.8s ease';
+  io.observe(el);
+});
+
+/* ════════════════════════════════
+   ACCORDION
+════════════════════════════════ */
+function togglePillar(el){
+  document.querySelectorAll('.pillar').forEach(p=>p!==el&&p.classList.remove('open'));
+  el.classList.toggle('open');
+}
+
+
+
+/* ════════════════════════════════
+   UI SOUNDS
+════════════════════════════════ */
+(function(){
+  let sCtx=null;
+  function getSCtx(){
+    if(!sCtx) sCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(sCtx.state==='suspended') sCtx.resume();
+    return sCtx;
+  }
+
+  // Click seco — relay eléctrico (botones CTA principales)
+  function sndClick(){
+    const c=getSCtx(), t=c.currentTime;
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='square'; o.frequency.setValueAtTime(1200,t);
+    o.frequency.exponentialRampToValueAtTime(400,t+0.04);
+    g.gain.setValueAtTime(0.18,t);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.055);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+0.06);
+  }
+
+  // Hover suave — micro-tick (chips, nav links)
+  function sndHover(){
+    const c=getSCtx(), t=c.currentTime;
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(1800,t);
+    o.frequency.exponentialRampToValueAtTime(2200,t+0.03);
+    g.gain.setValueAtTime(0.06,t);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.04);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+0.045);
+  }
+
+  // Acordeón abre — whoosh descendente
+  function sndOpen(){
+    const c=getSCtx(), t=c.currentTime;
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(900,t);
+    o.frequency.exponentialRampToValueAtTime(280,t+0.14);
+    g.gain.setValueAtTime(0.10,t);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.15);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+0.16);
+  }
+
+  // Acordeón cierra — whoosh ascendente
+  function sndClose(){
+    const c=getSCtx(), t=c.currentTime;
+    const o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(280,t);
+    o.frequency.exponentialRampToValueAtTime(700,t+0.10);
+    g.gain.setValueAtTime(0.07,t);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.11);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+0.12);
+  }
+
+  // Hover card bento — crackle casi imperceptible
+  function sndCard(){
+    const c=getSCtx(), t=c.currentTime;
+    const buf=c.createBuffer(1,c.sampleRate*0.04,c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+    const src=c.createBufferSource(), g=c.createGain();
+    const hp=c.createBiquadFilter();
+    hp.type='highpass'; hp.frequency.value=3000;
+    src.buffer=buf;
+    g.gain.value=0.04;
+    src.connect(hp); hp.connect(g); g.connect(c.destination);
+    src.start(t);
+  }
+
+  // — Botones CTA principales (click)
+  document.querySelectorAll('.btn-main,.btn-outline,.nav-cta,.video-pill,.portal-cta')
+    .forEach(el=>{
+      el.addEventListener('click', sndClick, {passive:true});
+    });
+
+  // — Chips de tipo de seguro (hover + click)
+  document.querySelectorAll('.type-chip')
+    .forEach(el=>{
+      el.addEventListener('mouseenter', sndHover, {passive:true});
+      el.addEventListener('click', sndClick, {passive:true});
+    });
+
+  // — Nav links (hover)
+  document.querySelectorAll('.nav-links a')
+    .forEach(el=>{
+      el.addEventListener('mouseenter', sndHover, {passive:true});
+    });
+
+  // — Cards bento (hover)
+  document.querySelectorAll('.cb')
+    .forEach(el=>{
+      el.addEventListener('mouseenter', sndCard, {passive:true});
+    });
+
+  // — Acordeón pilares (abre/cierra)
+  document.querySelectorAll('.pillar')
+    .forEach(el=>{
+      el.addEventListener('click', function(){
+        if(el.classList.contains('open')) sndClose();
+        else sndOpen();
+      }, {passive:true});
+    });
+
+})();
+
+/* ════════════════════════════════
+   WA FORM
+════════════════════════════════ */
+function sendWA(){
+  const n=document.getElementById('f-name').value.trim();
+  const t=document.getElementById('f-phone').value.trim();
+  const s=document.getElementById('f-type').value.trim();
+  const m=document.getElementById('f-msg').value.trim();
+  const parts=["Hola Fuerza Natural, quiero cotizar un seguro."];
+  if(n)parts.push("Nombre: "+n);
+  if(t)parts.push("Teléfono: "+t);
+  if(s)parts.push("Tipo de seguro: "+s);
+  if(m)parts.push("Consulta: "+m);
+  window.open("https://wa.me/542616173100?text="+encodeURIComponent(parts.join("\n")),"_blank");
+}
+</script>
+</body>
+</html>
