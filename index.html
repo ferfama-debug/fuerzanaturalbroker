@@ -721,8 +721,6 @@ footer{
   animation:waPing 3s ease-in-out infinite;
   transition:transform 0.2s;
 }
-
-
 .wa:hover{transform:scale(1.1)}
 .wa svg{width:28px;height:28px;fill:#fff}
 @keyframes waPing{0%,100%{box-shadow:0 0 0 0 rgba(29,92,10,0.4)}70%{box-shadow:0 0 0 16px rgba(29,92,10,0)}}
@@ -799,6 +797,372 @@ footer{
   .nav-wordmark{font-size:20px}
   .nav-cta{padding:10px 16px;font-size:14px}
 }
+
+/* ══════════════════════════════════
+   RESPONSIVE PATCH — SURGICAL
+══════════════════════════════════ */
+@media (max-width: 768px){
+  html,body{overflow-x:hidden}
+  #three-canvas,#noise,#scanlines,#cursor-wrap{display:none!important}
+
+  nav{
+    height:auto;
+    min-height:72px;
+    padding:12px 1rem;
+    gap:12px;
+    align-items:center;
+  }
+  .nav-logo{
+    gap:10px;
+    min-width:0;
+    max-width:calc(100% - 118px);
+  }
+  .nav-logo-mark{
+    width:44px;
+    height:44px;
+  }
+  .nav-wordmark{
+    font-size:14px;
+    letter-spacing:0.06em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .nav-cta{
+    min-width:104px;
+    padding:10px 12px;
+    font-size:11px;
+    line-height:1.05;
+    text-align:center;
+    white-space:normal;
+    flex-shrink:0;
+  }
+
+  .video-intro{
+    min-height:auto;
+  }
+  .video-intro-badge{
+    left:1rem;
+    right:1rem;
+    top:84px;
+    padding:8px 10px;
+    gap:8px;
+  }
+  .video-intro-badge strong{
+    font-size:12px;
+    letter-spacing:0.08em;
+  }
+  .video-intro-badge span{
+    font-size:8px;
+    letter-spacing:0.12em;
+  }
+  .video-intro-content{
+    padding:7rem 1rem 2.5rem;
+    gap:1.2rem;
+  }
+  .video-intro-title{
+    font-size:clamp(46px,15vw,74px);
+    line-height:0.92;
+  }
+  .video-intro-copy p{
+    font-size:13px;
+    line-height:1.65;
+  }
+  .video-intro-actions{
+    gap:10px;
+  }
+
+  .hero{
+    min-height:auto;
+    padding:5.5rem 1rem 4rem;
+  }
+  .hero-eyebrow{
+    font-size:9px;
+    letter-spacing:0.16em;
+    gap:8px;
+    margin-bottom:1.5rem;
+    flex-wrap:wrap;
+  }
+  .eye-line{
+    width:18px;
+  }
+  .hero-h1{
+    font-size:clamp(48px,15vw,88px)!important;
+    margin-bottom:1.2rem;
+  }
+  .hero-desc{
+    font-size:19px;
+    line-height:1.42;
+    max-width:26rem;
+    margin-bottom:2rem;
+  }
+  .hero-actions{
+    gap:0.85rem;
+    margin-bottom:1.25rem;
+  }
+  .btn-main,.btn-outline,.video-pill,.portal-cta{
+    width:100%;
+    justify-content:center;
+  }
+  .btn-main,.btn-outline{
+    padding:16px 18px;
+    font-size:16px;
+  }
+
+  .hero > div[style*="margin-bottom:20px"]{
+    gap:10px!important;
+    font-size:10px!important;
+    margin-bottom:16px!important;
+  }
+  .hero > div[style*="margin-top:20px"]{
+    margin-top:14px!important;
+    gap:10px!important;
+    font-size:10px!important;
+  }
+  .hero > div[style*="margin-top:12px"]{
+    margin-top:8px!important;
+    font-size:9px!important;
+    letter-spacing:0.12em!important;
+  }
+
+  .hero-type-grid{
+    gap:8px;
+    width:100%;
+  }
+  .type-chip{
+    width:calc(50% - 4px);
+    justify-content:center;
+    padding:10px 12px;
+    font-size:9px;
+  }
+
+  .coberturas,.nosotros,.aseg,.contacto,.reviews,.video-sec,.portal{
+    padding-top:4.5rem;
+    padding-bottom:4rem;
+    padding-left:1rem!important;
+    padding-right:1rem!important;
+  }
+  .sec-label{
+    margin-bottom:1rem;
+    font-size:9px;
+    letter-spacing:0.18em;
+    gap:10px;
+  }
+  .sec-label::before{
+    width:20px;
+  }
+  .sec-h2{
+    font-size:clamp(42px,13vw,68px);
+    margin-bottom:2.5rem;
+  }
+
+  .cob-bento,.reviews-grid,.numeros{
+    grid-template-columns:1fr!important;
+    gap:10px;
+  }
+  .cb{
+    min-height:auto;
+    padding:2rem 1.3rem;
+  }
+  .cb-arrow{
+    top:1.2rem;
+    right:1.2rem;
+  }
+  .cb-title{
+    font-size:30px;
+  }
+  .cb-desc{
+    font-size:12px;
+    line-height:1.6;
+  }
+
+  .numeros{
+    border-top:1px solid var(--border);
+  }
+  .num{
+    padding:2.2rem 1.25rem;
+    border-right:none;
+    border-bottom:1px solid var(--border);
+  }
+  .num:last-child{
+    border-bottom:none;
+  }
+  .num-big{
+    font-size:56px;
+  }
+
+  .review{
+    min-height:auto;
+    padding:1.8rem 1.4rem;
+  }
+  .review-quote{
+    font-size:24px;
+    max-width:none;
+    margin-bottom:1.2rem;
+  }
+
+  .nosotros,.contacto,.video-copy,.portal-shell{
+    grid-template-columns:1fr!important;
+    gap:2rem;
+  }
+  .nos-big-num{
+    display:none;
+  }
+  .nos-quote{
+    font-size:36px;
+    margin-bottom:1.5rem;
+  }
+  .nos-body{
+    font-size:14px;
+    line-height:1.7;
+  }
+  .pillar{
+    padding:1.2rem 0;
+  }
+  .pillar-t{
+    font-size:20px;
+  }
+
+  .video-shell{
+    overflow:hidden;
+  }
+  .brand-video{
+    max-height:none;
+    min-height:260px;
+    object-fit:cover;
+  }
+  .video-copy{
+    padding:1.2rem;
+  }
+  .video-note{
+    font-size:13px;
+  }
+  .video-actions{
+    justify-content:flex-start;
+  }
+  .btn-small{
+    width:100%;
+  }
+
+  .portal{
+    margin-top:3rem;
+  }
+  .portal-shell{
+    padding:1.5rem;
+  }
+  .portal-title{
+    font-size:42px;
+  }
+  .portal-copy{
+    font-size:13px;
+  }
+
+  .rail::before,.rail::after{
+    width:44px;
+  }
+  .aseg{
+    overflow:hidden;
+  }
+  .aseg-item{
+    flex:0 0 155px;
+    height:72px;
+    padding:1rem;
+  }
+  .aseg-item span{
+    font-size:12px;
+    letter-spacing:0.08em;
+  }
+
+  .contact-giant{
+    font-size:clamp(46px,14vw,68px);
+    margin-bottom:1rem;
+  }
+  .contact-desc{
+    font-size:14px;
+    line-height:1.65;
+    margin-bottom:1.5rem;
+  }
+  .cc-link{
+    padding:1rem 1rem;
+    gap:0.9rem;
+  }
+  .cc-icon-sq{
+    width:42px;
+    height:42px;
+  }
+  .cc-val{
+    font-size:17px;
+    line-height:1.1;
+  }
+
+  .form-head{
+    padding:1.5rem 1.25rem 0;
+    margin-bottom:1.5rem;
+    padding-bottom:1.2rem;
+  }
+  .form-title{
+    font-size:30px;
+  }
+  .form-body{
+    padding:0 1.25rem 1.5rem;
+  }
+  .fg input,.fg select,.fg textarea{
+    font-size:16px;
+  }
+  .btn-send{
+    padding:18px 14px;
+    font-size:18px;
+  }
+
+  footer{
+    padding:2rem 1rem 5.8rem;
+    gap:1rem;
+    justify-content:flex-start;
+  }
+  .foot-links{
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+  .foot-copy{
+    width:100%;
+    line-height:1.5;
+  }
+
+  .audio-toggle{
+    bottom:5.4rem;
+    right:1rem;
+    height:40px;
+    padding:0 12px;
+    font-size:9px;
+  }
+  .wa{
+    width:56px;
+    height:56px;
+    right:1rem;
+    bottom:1rem;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 420px){
+  .nav-wordmark{
+    font-size:13px;
+  }
+  .nav-cta{
+    min-width:96px;
+    padding:9px 10px;
+    font-size:10px;
+  }
+  .type-chip{
+    width:100%;
+  }
+  .hero-desc{
+    font-size:17px;
+  }
+  .review-quote{
+    font-size:22px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1458,117 +1822,42 @@ function togglePillar(el){
   el.classList.toggle('open');
 }
 
-
-
 /* ════════════════════════════════
-   UI SOUNDS
+   AUDIO AMBIENCE (on first click)
 ════════════════════════════════ */
-(function(){
-  let sCtx=null;
-  function getSCtx(){
-    if(!sCtx) sCtx=new(window.AudioContext||window.webkitAudioContext)();
-    if(sCtx.state==='suspended') sCtx.resume();
-    return sCtx;
-  }
-
-  // Click seco — relay eléctrico (botones CTA principales)
-  function sndClick(){
-    const c=getSCtx(), t=c.currentTime;
-    const o=c.createOscillator(), g=c.createGain();
-    o.type='square'; o.frequency.setValueAtTime(1200,t);
-    o.frequency.exponentialRampToValueAtTime(400,t+0.04);
-    g.gain.setValueAtTime(0.18,t);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+0.055);
-    o.connect(g); g.connect(c.destination);
-    o.start(t); o.stop(t+0.06);
-  }
-
-  // Hover suave — micro-tick (chips, nav links)
-  function sndHover(){
-    const c=getSCtx(), t=c.currentTime;
-    const o=c.createOscillator(), g=c.createGain();
-    o.type='sine'; o.frequency.setValueAtTime(1800,t);
-    o.frequency.exponentialRampToValueAtTime(2200,t+0.03);
-    g.gain.setValueAtTime(0.06,t);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+0.04);
-    o.connect(g); g.connect(c.destination);
-    o.start(t); o.stop(t+0.045);
-  }
-
-  // Acordeón abre — whoosh descendente
-  function sndOpen(){
-    const c=getSCtx(), t=c.currentTime;
-    const o=c.createOscillator(), g=c.createGain();
-    o.type='sine'; o.frequency.setValueAtTime(900,t);
-    o.frequency.exponentialRampToValueAtTime(280,t+0.14);
-    g.gain.setValueAtTime(0.10,t);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+0.15);
-    o.connect(g); g.connect(c.destination);
-    o.start(t); o.stop(t+0.16);
-  }
-
-  // Acordeón cierra — whoosh ascendente
-  function sndClose(){
-    const c=getSCtx(), t=c.currentTime;
-    const o=c.createOscillator(), g=c.createGain();
-    o.type='sine'; o.frequency.setValueAtTime(280,t);
-    o.frequency.exponentialRampToValueAtTime(700,t+0.10);
-    g.gain.setValueAtTime(0.07,t);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+0.11);
-    o.connect(g); g.connect(c.destination);
-    o.start(t); o.stop(t+0.12);
-  }
-
-  // Hover card bento — crackle casi imperceptible
-  function sndCard(){
-    const c=getSCtx(), t=c.currentTime;
-    const buf=c.createBuffer(1,c.sampleRate*0.04,c.sampleRate);
-    const d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
-    const src=c.createBufferSource(), g=c.createGain();
-    const hp=c.createBiquadFilter();
-    hp.type='highpass'; hp.frequency.value=3000;
-    src.buffer=buf;
-    g.gain.value=0.04;
-    src.connect(hp); hp.connect(g); g.connect(c.destination);
-    src.start(t);
-  }
-
-  // — Botones CTA principales (click)
-  document.querySelectorAll('.btn-main,.btn-outline,.nav-cta,.video-pill,.portal-cta')
-    .forEach(el=>{
-      el.addEventListener('click', sndClick, {passive:true});
-    });
-
-  // — Chips de tipo de seguro (hover + click)
-  document.querySelectorAll('.type-chip')
-    .forEach(el=>{
-      el.addEventListener('mouseenter', sndHover, {passive:true});
-      el.addEventListener('click', sndClick, {passive:true});
-    });
-
-  // — Nav links (hover)
-  document.querySelectorAll('.nav-links a')
-    .forEach(el=>{
-      el.addEventListener('mouseenter', sndHover, {passive:true});
-    });
-
-  // — Cards bento (hover)
-  document.querySelectorAll('.cb')
-    .forEach(el=>{
-      el.addEventListener('mouseenter', sndCard, {passive:true});
-    });
-
-  // — Acordeón pilares (abre/cierra)
-  document.querySelectorAll('.pillar')
-    .forEach(el=>{
-      el.addEventListener('click', function(){
-        if(el.classList.contains('open')) sndClose();
-        else sndOpen();
-      }, {passive:true});
-    });
-
-})();
+let audioStarted=false;
+function startAudio(){
+  if(audioStarted)return;
+  audioStarted=true;
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    // Gentle drone: two oscillators + reverb
+    function makeNode(freq, gain, type='sine'){
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      const f=ctx.createBiquadFilter();
+      f.type='lowpass';f.frequency.value=800;
+      o.type=type;o.frequency.value=freq;
+      g.gain.setValueAtTime(0,ctx.currentTime);
+      g.gain.linearRampToValueAtTime(gain,ctx.currentTime+4);
+      o.connect(f);f.connect(g);g.connect(ctx.destination);
+      o.start();
+      return {o,g};
+    }
+    // Sub bass hum
+    makeNode(40,0.04,'sine');
+    // Mid drone
+    makeNode(82,0.025,'sine');
+    // High shimmer
+    makeNode(164,0.012,'triangle');
+    // Slight detune movement
+    const lfo=ctx.createOscillator();
+    const lfog=ctx.createGain();
+    lfo.frequency.value=0.08;lfog.gain.value=2;
+    lfo.connect(lfog);lfo.start();
+  }catch(e){}
+}
+document.addEventListener('click',startAudio,{once:true});
 
 /* ════════════════════════════════
    WA FORM
