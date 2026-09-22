@@ -285,6 +285,11 @@ footer a:hover{color:#fff}
 .cta .btn-s{border-color:rgba(255,255,255,.6);color:#fff}
 .cta .btn-s:hover{background:#fff;color:var(--forest2)}
 @media(max-width:900px){.two-col{grid-template-columns:1fr}}
+
+.pg-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,4rem);align-items:center}
+.ph{position:relative;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background:var(--forest) url(/favicon.png) center/84px no-repeat}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+@media(max-width:900px){.pg-grid{grid-template-columns:1fr}.ph{aspect-ratio:16/10}}
 </style>
 </head>
 <body>
@@ -311,11 +316,16 @@ footer a:hover{color:#fff}
 <section class="pg-hero">
   <div class="wrap">
     <p class="crumb"><a href="index.html">Inicio</a> / <a href="index.html#coberturas">Coberturas</a> / Seguro de auto</p>
+    <div class="pg-grid">
+    <div>
     <h1>Seguro de auto en Mendoza</h1>
     <p class="lead">Comparamos coberturas de varias aseguradoras para que elijas la que realmente necesitás para tu auto, moto o camioneta, sin pagar de más ni quedarte corto.</p>
     <div class="acts">
       <a class="btn btn-p" href="index.html?ramo=Automotor#cotizar">Cotizar en 3 pasos</a>
       <a class="btn btn-s" href="https://wa.me/542616173100?text=Hola%2C%20quiero%20cotizar%20un%20seguro%20de%20auto." target="_blank" rel="noopener">Consultar por WhatsApp</a>
+    </div>
+    </div>
+    <figure class="ph"><img src="https://images.unsplash.com/photo-1735896951413-cb764374f75a?auto=format&fit=crop&w=1100&q=75" alt="Auto blanco circulando por un camino de montaña" width="1100" height="825" fetchpriority="high" onerror="this.remove()"></figure>
     </div>
   </div>
 </section>
