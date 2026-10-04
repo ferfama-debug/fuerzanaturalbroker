@@ -530,7 +530,7 @@ footer a:hover{color:#fff}
   <h2 id="priv-h">Política de privacidad</h2>
   <p>Fernando Fabián Martinez, productor asesor de seguros (Matrícula SSN 106695), es responsable del tratamiento de los datos que recibe a través de este sitio. Contacto: contacto@fuerzanaturalbroker.com.</p>
   <h3>Qué datos recopilamos</h3>
-  <p>Los que ingresás en el cotizador (nombre, teléfono y detalles del seguro que consultás) y, solo si aceptás las cookies de análisis, datos de navegación anónimos mediante Google Analytics.</p>
+  <p>Los que ingresás en el cotizador o en nuestro formulario de consulta (nombre, teléfono, email, patente y vehículo, y detalles del seguro que consultás), que guardamos en nuestro sistema de gestión de clientes, y, solo si aceptás las cookies de análisis, datos de navegación anónimos mediante Google Analytics.</p>
   <h3>Para qué los usamos</h3>
   <p>Para responder tu consulta, elaborar cotizaciones y contactarte. Podemos compartir la información necesaria con las aseguradoras únicamente para cotizar o gestionar el seguro que nos pidas. No vendemos tus datos.</p>
   <h3>Tus derechos</h3>
@@ -556,17 +556,22 @@ footer a:hover{color:#fff}
   },
   /* Pegá acá la URL que recibe las consultas (tu CRM o una hoja de Google). Vacío = desactivado. */
   LEADS_URL='https://script.google.com/macros/s/AKfycbzAZY6l9YE5SNec05ly6WAlaBMRUTmZyAd9wHQBdFGeCnuxlDRG6wN7n5pcBIKfw2tlaw/exec',
+  /* Dirección del CRM que recibe las consultas del cotizador. */
+  CRM_URL='https://crm.fuerzanaturalbroker.com/consulta/api/',
   st=1,ramo='',ans={},nm='',ph='',url='';
 
   function lead(){
-    if(!LEADS_URL)return;
-    var q=new URLSearchParams(location.search),
-    d={nombre:nm,telefono:ph,ramo:ramo,detalles:ans,pagina:location.href,origen:q.get('utm_source')||document.referrer||'directo',medio:q.get('utm_medium')||'',campana:q.get('utm_campaign')||'',fecha:new Date().toISOString()};
+    var q=new URLSearchParams(location.search),b;
     try{
-      var b=JSON.stringify(d);
-      if(navigator.sendBeacon)navigator.sendBeacon(LEADS_URL,new Blob([b],{type:'text/plain'}));
-      else fetch(LEADS_URL,{method:'POST',body:b,keepalive:true,mode:'no-cors'});
-    }catch(e){}
+      b=JSON.stringify({nombre:nm,telefono:ph,ramo:ramo,detalles:ans,pagina:location.href,origen:q.get('utm_source')||document.referrer||'directo',medio:q.get('utm_medium')||'',campana:q.get('utm_campaign')||'',fecha:new Date().toISOString()});
+    }catch(e){return}
+    [LEADS_URL,CRM_URL].forEach(function(u){
+      if(!u)return;
+      try{
+        if(navigator.sendBeacon)navigator.sendBeacon(u,new Blob([b],{type:'text/plain'}));
+        else fetch(u,{method:'POST',body:b,keepalive:true,mode:'no-cors'});
+      }catch(e){}
+    });
   }
 
   Q.Comercio=Q.Empresa;Q.Flota=Q.Automotor;
